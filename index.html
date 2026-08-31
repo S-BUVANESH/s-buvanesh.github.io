@@ -3519,7 +3519,7 @@
   ============================================================ -->
   <div id="preloader">
     <div id="intro-video-wrapper">
-      <video id="intro-video" src="./Cinematic_Intro_Sequence.mp4" playsinline muted
+      <video id="intro-video" src="Cinematic_Intro_Sequence.mp4" playsinline muted
         autoplay preload="auto"></video>
       <div class="preloader-video-overlay"></div>
     </div>
@@ -4471,25 +4471,47 @@
       const preloader = document.getElementById('preloader');
       const video = document.getElementById('intro-video');
       const progressFill = document.getElementById('intel-progress-fill');
+      const statusLine = document.getElementById('intel-status-line');
       const skipBtn = document.getElementById('btn-skip-intro');
       const soundToggleBtn = document.getElementById('btn-sound-toggle');
 
       if (!preloader || !video) return;
 
+      const TELEMETRY_STAGES = [
+        { pct: 0, text: '// INITIALIZING NEURAL VISION & EMBEDDINGS' },
+        { pct: 25, text: '// CALIBRATING 12-HOUR CHRONOGRAPH ARSENAL' },
+        { pct: 50, text: '// SYNCHRONIZING 3D HOLOGRAPHIC CREDENTIAL VAULT' },
+        { pct: 75, text: '// CONNECTING PROTOSEM FIELD TELEMETRY' },
+        { pct: 90, text: '// SYSTEM TELEMETRY NOMINAL · READY' }
+      ];
+
       // Sound toggle handler
-      soundToggleBtn?.addEventListener('click', () => {
+      function toggleSound() {
+        initAudio();
         video.muted = !video.muted;
-        soundToggleBtn.textContent = video.muted ? '🔊 SOUND ON' : '🔇 MUTE';
+        if (soundToggleBtn) {
+          soundToggleBtn.textContent = video.muted ? '🔊 SOUND ON' : '🔇 MUTE';
+        }
+      }
+
+      soundToggleBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSound();
       });
 
       // Start autoplay with muted fallback
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          video.muted = true;
-          video.play().catch(() => { });
-        });
+      function startPlayback() {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            video.muted = true;
+            video.play().catch(() => { });
+          });
+        }
       }
+
+      video.addEventListener('canplay', startPlayback);
+      startPlayback();
 
       function endIntroAndTransition() {
         if (introFinished) return;
@@ -4500,13 +4522,13 @@
             .to(video, {
               scale: 1.06,
               opacity: 0,
-              filter: 'brightness(1.5)',
-              duration: 0.7,
+              filter: 'brightness(1.4)',
+              duration: 0.6,
               ease: 'power2.inOut'
             })
             .to('#preloader', {
               opacity: 0,
-              duration: 0.5,
+              duration: 0.45,
               ease: 'power2.out',
               onComplete: () => {
                 preloader.style.display = 'none';
@@ -4515,7 +4537,7 @@
                 video.load();
                 ScrollTrigger?.refresh();
               }
-            }, '-=0.3');
+            }, '-=0.25');
         } else {
           preloader.style.display = 'none';
           video.pause();
@@ -4528,6 +4550,19 @@
         if (video.duration) {
           const pct = (video.currentTime / video.duration) * 100;
           if (progressFill) progressFill.style.width = pct + '%';
+
+          // Update dynamic telemetry stage
+          if (statusLine) {
+            for (let i = TELEMETRY_STAGES.length - 1; i >= 0; i--) {
+              if (pct >= TELEMETRY_STAGES[i].pct) {
+                if (statusLine.textContent !== TELEMETRY_STAGES[i].text) {
+                  statusLine.textContent = TELEMETRY_STAGES[i].text;
+                }
+                break;
+              }
+            }
+          }
+
           if (pct >= 98.5 && !introFinished) {
             endIntroAndTransition();
           }
@@ -4536,7 +4571,11 @@
 
       video.addEventListener('ended', endIntroAndTransition);
 
-      skipBtn?.addEventListener('click', endIntroAndTransition);
+      skipBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        endIntroAndTransition();
+      });
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !introFinished) endIntroAndTransition();
       });
@@ -4546,7 +4585,7 @@
         if (!introFinished && (video.paused || video.readyState === 0)) {
           endIntroAndTransition();
         }
-      }, 10000);
+      }, 15000);
     })();
 
     // ==========================================
