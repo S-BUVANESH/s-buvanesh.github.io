@@ -630,119 +630,63 @@
       transform: scale(1.01);
     }
 
-    .preloader-video-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(2, 6, 18, 0.1) 0%, rgba(2, 6, 18, 0.45) 75%, rgba(1, 3, 10, 0.85) 100%);
-      pointer-events: none;
-      z-index: 2;
-    }
-
     .preloader-overlay-hud {
-      position: relative;
+      position: absolute;
+      top: 24px;
+      right: 28px;
       z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      height: 90vh;
       pointer-events: none;
     }
 
-    .preloader-topbar {
+    .preloader-controls {
       display: flex;
+      gap: 12px;
       align-items: center;
-      justify-content: space-between;
-      width: 90vw;
-      max-width: 1200px;
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--cyan-hud);
-      letter-spacing: 0.2em;
+      pointer-events: auto;
     }
 
     .btn-sound-toggle {
-      pointer-events: auto;
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.15em;
       color: var(--cyan-hud);
       border: 1px solid var(--cyan-glow);
-      padding: 6px 14px;
-      border-radius: 2px;
-      background: rgba(0, 240, 255, 0.08);
+      padding: 8px 16px;
+      border-radius: 3px;
+      background: rgba(2, 6, 18, 0.65);
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
       transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
 
     .btn-sound-toggle:hover {
       background: rgba(0, 240, 255, 0.2);
       border-color: var(--cyan-hud);
       color: #fff;
-      box-shadow: 0 0 12px var(--cyan-glow);
+      box-shadow: 0 0 16px var(--cyan-glow);
     }
 
     .btn-skip-intro {
-      pointer-events: auto;
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.15em;
       color: var(--text-muted);
       border: 1px solid var(--border);
-      padding: 6px 16px;
-      border-radius: 2px;
-      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 18px;
+      border-radius: 3px;
+      background: rgba(2, 6, 18, 0.65);
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
       transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
 
     .btn-skip-intro:hover {
       color: var(--gold-bright);
       border-color: var(--gold);
-    }
-
-    .preloader-intel {
-      text-align: center;
-      pointer-events: auto;
-    }
-
-    .intel-title {
-      font-family: 'Cinzel', serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--gold-bright);
-      letter-spacing: 0.3em;
-      text-shadow: 0 0 25px var(--gold-glow);
-      margin-bottom: 8px;
-    }
-
-    .intel-sub {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--cyan-hud);
-      letter-spacing: 0.25em;
-      margin-bottom: 20px;
-      height: 18px;
-    }
-
-    .intel-progress-bar {
-      width: 320px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      margin: 0 auto;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .intel-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--gold), var(--cyan-hud));
-      box-shadow: 0 0 12px var(--cyan-hud);
-      transition: width 0.08s linear;
+      background: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 0 16px var(--gold-glow);
     }
 
     /* ============================================================
@@ -3521,29 +3465,12 @@
     <div id="intro-video-wrapper">
       <video id="intro-video" src="Cinematic_Intro_Sequence.mp4" playsinline muted
         autoplay preload="auto"></video>
-      <div class="preloader-video-overlay"></div>
     </div>
 
     <div class="preloader-overlay-hud">
-      <div class="preloader-topbar">
-        <div>// BUVANESH S. · ENGINEERING PORTFOLIO 2026</div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <button class="btn-sound-toggle" id="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND ON</button>
-          <button class="btn-skip-intro" id="btn-skip-intro">SKIP INTRO [ESC]</button>
-        </div>
-      </div>
-
-      <div class="preloader-intel">
-        <h2 class="intel-title">BUVANESH S.</h2>
-        <div class="intel-sub font-mono" id="intel-status-line">AI &amp; MACHINE LEARNING ENGINEER</div>
-
-        <div class="intel-progress-bar">
-          <div class="intel-progress-fill" id="intel-progress-fill"></div>
-        </div>
-      </div>
-
-      <div class="preloader-topbar" style="justify-content: center; opacity: 0.7; font-size: 10px;">
-        <span>CINEMATIC INTRO SEQUENCE // SYSTEM TELEMETRY NOMINAL</span>
+      <div class="preloader-controls">
+        <button class="btn-sound-toggle" id="btn-sound-toggle" aria-label="Toggle Sound">🔊 SOUND ON</button>
+        <button class="btn-skip-intro" id="btn-skip-intro">SKIP INTRO [ESC]</button>
       </div>
     </div>
   </div>
@@ -4470,20 +4397,10 @@
     (function initCinematicVideoIntro() {
       const preloader = document.getElementById('preloader');
       const video = document.getElementById('intro-video');
-      const progressFill = document.getElementById('intel-progress-fill');
-      const statusLine = document.getElementById('intel-status-line');
       const skipBtn = document.getElementById('btn-skip-intro');
       const soundToggleBtn = document.getElementById('btn-sound-toggle');
 
       if (!preloader || !video) return;
-
-      const TELEMETRY_STAGES = [
-        { pct: 0, text: '// INITIALIZING NEURAL VISION & EMBEDDINGS' },
-        { pct: 25, text: '// CALIBRATING 12-HOUR CHRONOGRAPH ARSENAL' },
-        { pct: 50, text: '// SYNCHRONIZING 3D HOLOGRAPHIC CREDENTIAL VAULT' },
-        { pct: 75, text: '// CONNECTING PROTOSEM FIELD TELEMETRY' },
-        { pct: 90, text: '// SYSTEM TELEMETRY NOMINAL · READY' }
-      ];
 
       // Sound toggle handler
       function toggleSound() {
@@ -4520,15 +4437,14 @@
         if (window.gsap) {
           gsap.timeline()
             .to(video, {
-              scale: 1.06,
+              scale: 1.05,
               opacity: 0,
-              filter: 'brightness(1.4)',
               duration: 0.6,
               ease: 'power2.inOut'
             })
             .to('#preloader', {
               opacity: 0,
-              duration: 0.45,
+              duration: 0.4,
               ease: 'power2.out',
               onComplete: () => {
                 preloader.style.display = 'none';
@@ -4537,7 +4453,7 @@
                 video.load();
                 ScrollTrigger?.refresh();
               }
-            }, '-=0.25');
+            }, '-=0.2');
         } else {
           preloader.style.display = 'none';
           video.pause();
@@ -4549,20 +4465,6 @@
       video.addEventListener('timeupdate', () => {
         if (video.duration) {
           const pct = (video.currentTime / video.duration) * 100;
-          if (progressFill) progressFill.style.width = pct + '%';
-
-          // Update dynamic telemetry stage
-          if (statusLine) {
-            for (let i = TELEMETRY_STAGES.length - 1; i >= 0; i--) {
-              if (pct >= TELEMETRY_STAGES[i].pct) {
-                if (statusLine.textContent !== TELEMETRY_STAGES[i].text) {
-                  statusLine.textContent = TELEMETRY_STAGES[i].text;
-                }
-                break;
-              }
-            }
-          }
-
           if (pct >= 98.5 && !introFinished) {
             endIntroAndTransition();
           }
