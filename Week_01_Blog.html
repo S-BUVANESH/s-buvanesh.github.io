@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="first-light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRICE ProtoSem - Week 01 Dossier | Dossier</title>
+  <meta name="description"
+    content="Dossier for Week 01 of PRICE ProtoSem: From Observers to Problem Solvers: The Genesis Sprint, by Buvanesh S.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP & Lenis Smooth Scroll -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.16/dist/lenis.min.js"></script>
+
+  <style>
+    /* ============================================================
+      ★ 1. CSS VARIABLES & DYNAMIC THEMES (MATCHING MAIN PORTFOLIO)
+    ============================================================ */
+    :root,
+    html[data-theme="first-light"] {
+      --bg: #030818;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #0c1836 0%, #030818 60%, #01040d 100%);
+      --surface: rgba(7, 18, 43, 0.65);
+      --surface-2: rgba(12, 28, 64, 0.85);
+      --surface-glass: rgba(14, 34, 77, 0.45);
+
+      --gold: #D4AF37;
+      --gold-bright: #F7E7A9;
+      --gold-dark: #8C6D1F;
+      --gold-glow: rgba(212, 175, 55, 0.35);
+      --gold-border: rgba(212, 175, 55, 0.35);
+      --gold-border-hover: rgba(212, 175, 55, 0.9);
+
+      --accent: var(--gold);
+      --accent-glow: var(--gold-glow);
+      --cyan-hud: #00F0FF;
+      --cyan-glow: rgba(0, 240, 255, 0.3);
+      --accent-3: #10B981;
+
+      --border: rgba(212, 175, 55, 0.22);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+      --text-primary: #F8FAFC;
+      --text-body: #94A3B8;
+      --text-muted: #64748B;
+      --text-gold: #E5C158;
+    }
+
+    html[data-theme="spectre"] {
+      --bg: #050508;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1f0d14 0%, #090608 55%, #020203 100%);
+      --surface: rgba(26, 15, 20, 0.65);
+      --surface-2: rgba(38, 20, 28, 0.85);
+      --surface-glass: rgba(44, 22, 32, 0.45);
+
+      --gold: #E09F67;
+      --gold-bright: #FCD5B5;
+      --gold-dark: #8F552C;
+      --gold-glow: rgba(224, 159, 103, 0.35);
+      --gold-border: rgba(224, 159, 103, 0.35);
+      --gold-border-hover: rgba(224, 159, 103, 0.9);
+
+      --accent: var(--gold);
+      --accent-glow: var(--gold-glow);
+      --cyan-hud: #FB7185;
+      --cyan-glow: rgba(251, 113, 133, 0.3);
+      --accent-3: #F43F5E;
+
+      --border: rgba(224, 159, 103, 0.22);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+      --text-primary: #FFF1F2;
+      --text-body: #A8A29E;
+      --text-muted: #78716C;
+      --text-gold: #F2A97F;
+    }
+
+    html[data-theme="goldeneye"] {
+      --bg: #020b08;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #06261a 0%, #020c08 55%, #010403 100%);
+      --surface: rgba(6, 32, 22, 0.65);
+      --surface-2: rgba(9, 44, 30, 0.85);
+      --surface-glass: rgba(12, 54, 38, 0.45);
+
+      --gold: #EAB308;
+      --gold-bright: #FEF08A;
+      --gold-dark: #A16207;
+      --gold-glow: rgba(234, 179, 8, 0.35);
+      --gold-border: rgba(234, 179, 8, 0.35);
+      --gold-border-hover: rgba(234, 179, 8, 0.9);
+
+      --accent: var(--gold);
+      --accent-glow: var(--gold-glow);
+      --cyan-hud: #34D399;
+      --cyan-glow: rgba(52, 211, 153, 0.3);
+      --accent-3: #10B981;
+
+      --border: rgba(234, 179, 8, 0.22);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+      --text-primary: #F0FDF4;
+      --text-body: #94A3B8;
+      --text-muted: #64748B;
+      --text-gold: #FACC15;
+    }
+
+    html[data-theme="casino-royale"],
+    html[data-theme="light"] {
+      --bg: #F8F9FD;
+      --bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #EEF2F9 60%, #E2E8F4 100%);
+      --surface: rgba(255, 255, 255, 0.82);
+      --surface-2: rgba(240, 244, 252, 0.92);
+      --surface-glass: rgba(255, 255, 255, 0.65);
+
+      --gold: #A67C1E;
+      --gold-bright: #D4AF37;
+      --gold-dark: #664B0F;
+      --gold-glow: rgba(166, 124, 30, 0.25);
+      --gold-border: rgba(166, 124, 30, 0.35);
+      --gold-border-hover: rgba(166, 124, 30, 0.9);
+
+      --accent: var(--gold);
+      --accent-glow: var(--gold-glow);
+      --cyan-hud: #0284C7;
+      --cyan-glow: rgba(2, 132, 199, 0.25);
+      --accent-3: #059669;
+
+      --border: rgba(166, 124, 30, 0.25);
+      --border-subtle: rgba(15, 23, 42, 0.08);
+      --glass-shadow: 0 16px 36px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+      --text-primary: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --text-gold: #8C6D1F;
+    }
+
+    /* ============================================================
+      ★ 2. RESET & BASE
+    ============================================================ */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: auto;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      background-image: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-body);
+      overflow-x: hidden;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(212, 175, 55, 0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.65;
+      transform: translateZ(0);
+    }
+
+    ::selection {
+      background: var(--gold);
+      color: #030818;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .font-mono {
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ============================================================
+      ★ 3. HUD BRACKETS & LIQUID GLASS
+    ============================================================ */
+    .liquid-glass {
+      background: var(--surface);
+      backdrop-filter: blur(12px) saturate(160%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .liquid-glass:hover {
+      border-color: var(--gold-border-hover);
+      box-shadow: var(--glass-shadow), 0 0 25px var(--gold-glow);
+    }
+
+    .hud-brackets {
+      position: relative;
+    }
+
+    .hud-brackets::before,
+    .hud-brackets::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .hud-brackets::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+    }
+
+    .hud-brackets::after {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+    }
+
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan-hud);
+      box-shadow: 0 0 10px var(--cyan-hud);
+      animation: pulseGlow 2s infinite ease-in-out;
+      margin-right: 6px;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 14px var(--cyan-hud); }
+    }
+
+    /* ============================================================
+      ★ 4. NAVIGATION BAR & THEME CONTROLS
+    ============================================================ */
+    #nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 76px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 48px;
+      background: rgba(3, 8, 24, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    html[data-theme="casino-royale"] #nav,
+    html[data-theme="light"] #nav {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-monogram {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--gold-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(212, 175, 55, 0.08);
+      border-radius: 4px;
+    }
+
+    .nav-brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.15em;
+    }
+
+    .nav-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text-body);
+      letter-spacing: 0.12em;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold-bright);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back-portfolio {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 8px 16px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-bright);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-back-portfolio:hover {
+      background: var(--gold);
+      color: #000;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .theme-select-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-body);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .theme-select-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .theme-dropdown-menu {
+      position: absolute;
+      top: 80px;
+      right: 48px;
+      background: var(--surface-2);
+      border: 1px solid var(--gold-border);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(20px);
+      z-index: 1001;
+      min-width: 210px;
+    }
+
+    .theme-dropdown-menu.is-open {
+      display: flex;
+    }
+
+    .theme-opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      border-radius: 4px;
+      text-align: left;
+      transition: background 0.2s ease;
+    }
+
+    .theme-opt-btn:hover,
+    .theme-opt-btn.is-active {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold-bright);
+    }
+
+    .theme-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ============================================================
+      ★ 5. HERO SECTION — LUXURY EDITORIAL
+    ============================================================ */
+    .blog-hero {
+      padding: 150px 0 70px;
+      position: relative;
+    }
+
+    .blog-badge-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid var(--gold-border);
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+
+    .blog-hero-title {
+      font-family
