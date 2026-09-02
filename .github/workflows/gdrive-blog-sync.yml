@@ -58,8 +58,7 @@ jobs:
           folder_id = os.environ["GDRIVE_FOLDER_ID"]
 
           creds = service_account.Credentials.from_service_account_info(
-              key_info,
-              scopes=['https://www.googleapis.com/auth/drive.readonly']
+              key_info, scopes=['https://www.googleapis.com/auth/drive.readonly']
           )
           service = build('drive', 'v3', credentials=creds)
 
@@ -67,7 +66,7 @@ jobs:
           results = service.files().list(q=query, fields="files(id, name, mimeType)").execute()
           items = results.get('files', [])
 
-          # 3. Match filename variation for target week (e.g., 'Week 2', 'Week_02', 'w2')
+          # 3. Match filename variation for target week (e.g., 'Week 1', 'Week_01', 'w1')
           pattern = re.compile(rf'(?:week|w)[_\-\s]*0*{target_week}\b', re.IGNORECASE)
           matched_file = next((item for item in items if pattern.search(item['name'])), None)
 
@@ -105,16 +104,16 @@ jobs:
         if: steps.fetch_doc.outputs.status == 'proceed'
         run: |
           DOCX_FILE="${{ steps.fetch_doc.outputs.docx_file }}"
-          mkdir -p assets
+          mkdir -p images
 
-          # Convert docx to markdown while extracting images into assets/
-          pandoc "$DOCX_FILE" -t markdown --extract-media="assets" -o "stream.md"
+          # Convert docx to markdown while extracting images into images/
+          pandoc "$DOCX_FILE" -t markdown --extract-media="images" -o "stream.md"
 
-          # Flatten pandoc's nested media directory (assets/media/* -> assets/*)
-          if [ -d "assets/media" ]; then
-            mv assets/media/* assets/ 2>/dev/null || true
-            rmdir assets/media 2>/dev/null || true
-            sed -i 's|assets/media/|assets/|g' stream.md
+          # Flatten pandoc's nested media directory (images/media/* -> images/*)
+          if [ -d "images/media" ]; then
+            mv images/media/* images/ 2>/dev/null || true
+            rmdir images/media 2>/dev/null || true
+            sed -i 's|images/media/|images/|g' stream.md
           fi
 
       - name: Compile Themed HTML via Gemini Engine
@@ -124,7 +123,7 @@ jobs:
           TARGET_WEEK: ${{ steps.fetch_doc.outputs.target_week }}
         run: |
           python - << 'EOF'
-          import os, json, requests
+          import os, json, time, requests
 
           api_key = os.environ["GEMINI_API_KEY"]
           target_week = int(os.environ["TARGET_WEEK"])
@@ -136,7 +135,7 @@ jobs:
           with open("stream.md", "r", encoding="utf-8") as f:
               stream_md = f.read()
 
-          available_images = os.listdir("assets") if os.path.exists("assets") else []
+          available_images = os.listdir("images") if os.path.exists("images") else []
 
           prompt = f"""
           You are an automated frontend compiler. Your job is to convert raw chronological Markdown text into a fully styled HTML dossier page matching the provided template.
@@ -146,9 +145,9 @@ jobs:
           2. Map the narrative stream into the template's designated structure ($TITLE$, $BODY$, $STATS_GRID$, $TAKEAWAYS$, $GALLERY_ITEMS$, etc. or equivalent HUD components):
              - Chapter blocks must use: <article class="chapter-card liquid-glass hud-brackets">
              - Quotes must use: <div class="quote-callout">
-             - Narrative images must use: <div class="image-block"><img src="assets/<filename>" loading="lazy"></div>
+             - Narrative images must use: <div class="image-block"><img src="images/<filename>" loading="lazy"></div>
              - Trailing photos must be placed in: <div class="gallery-grid"> with <div class="gallery-item">
-          3. Ensure ALL image src attributes link directly to 'assets/<filename>' using only the actual filenames extracted: {available_images}.
+          3. Ensure ALL image src attributes link directly to 'images/<filename>' using only the actual filenames extracted: {available_images}.
           4. Ensure all back buttons link to 'index.html#experience'.
           5. Return ONLY the complete, raw HTML file without any markdown wrappers, commentary, or backticks.
 
@@ -159,7 +158,6 @@ jobs:
           {stream_md}
           """
 
-          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
           headers = {"Content-Type": "application/json"}
           payload = {
               "contents": [{"parts": [{"text": prompt}]}],
@@ -169,25 +167,47 @@ jobs:
               }
           }
 
-          response = requests.post(url, headers=headers, json=payload)
-          response_data = response.json()
+          candidate_models = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
+          compiled_text = None
 
-          if "candidates" not in response_data:
-              print("Gemini API compilation error:", response_data)
+          for model in candidate_models:
+              url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+              print(f"Attempting compilation with model: {model}...")
+
+              for attempt in range(1, 4):
+                  response = requests.post(url, headers=headers, json=payload)
+                  response_data = response.json()
+
+                  if response.status_code == 200 and "candidates" in response_data:
+                      compiled_text = response_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                      print(f"Success with {model} on attempt {attempt}.")
+                      break
+
+                  error_info = response_data.get("error", {})
+                  status_code = error_info.get("code", response.status_code)
+                  print(f"[{model}] Attempt {attempt} failed ({status_code}): {error_info.get('message', 'Unknown error')}")
+
+                  if status_code in [503, 429]:
+                      time.sleep(5 * attempt)
+                  else:
+                      break
+
+              if compiled_text:
+                  break
+
+          if not compiled_text:
+              print("All candidate models failed to generate content.")
               exit(1)
 
-          generated_html = response_data["candidates"][0]["content"]["parts"][0]["text"].strip()
-
-          # Strip accidental markdown code fences if present
-          if generated_html.startswith("```html"):
-              generated_html = generated_html[7:]
-          if generated_html.startswith("```"):
-              generated_html = generated_html[3:]
-          if generated_html.endswith("```"):
-              generated_html = generated_html[:-3]
+          if compiled_text.startswith("```html"):
+              compiled_text = compiled_text[7:]
+          if compiled_text.startswith("```"):
+              compiled_text = compiled_text[3:]
+          if compiled_text.endswith("```"):
+              compiled_text = compiled_text[:-3]
 
           with open(output_filename, "w", encoding="utf-8") as f:
-              f.write(generated_html.strip())
+              f.write(compiled_text.strip())
 
           print(f"Successfully compiled: {output_filename}")
           EOF
@@ -202,8 +222,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           TARGET_WEEK=$(printf "%02d" ${{ steps.fetch_doc.outputs.target_week }})
-          git add "Week_${TARGET_WEEK}_Blog.html" assets/
+          git add "Week_${TARGET_WEEK}_Blog.html" images/
+
           if git diff --staged --quiet; then
             echo "No structural modifications detected to commit."
           else
