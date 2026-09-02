@@ -1,0 +1,125 @@
+name: Weekly Google Drive Blog Synchronisation
+
+on:
+  schedule:
+    # 01:30 UTC = 07:00 IST every Monday
+    - cron: '30 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Environment & Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth
+
+      - name: Download Documents from Google Drive
+        env:
+          GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          mkdir -p temp_drive
+
+          python - << 'EOF'
+          import os, json, io
+          from google.oauth2 import service_account
+          from googleapiclient.discovery import build
+          from googleapiclient.http import MediaIoBaseDownload
+
+          key_info = json.loads(os.environ["GDRIVE_SA_KEY"])
+          folder_id = os.environ["GDRIVE_FOLDER_ID"]
+
+          creds = service_account.Credentials.from_service_account_info(
+              key_info, scopes=['https://www.googleapis.com/auth/drive.readonly']
+          )
+          service = build('drive', 'v3', credentials=creds)
+
+          query = f"'{folder_id}' in parents and trashed = false"
+          results = service.files().list(q=query, fields="files(id, name, mimeType)").execute()
+          items = results.get('files', [])
+
+          for item in items:
+              file_id = item['id']
+              clean_name = item['name'].replace(" ", "_")
+
+              if item['mimeType'] == 'application/vnd.google-apps.document':
+                  request = service.files().export_media(
+                      fileId=file_id, 
+                      mimeType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                  )
+                  target_file = f"temp_drive/{os.path.splitext(clean_name)[0]}.docx"
+              elif item['mimeType'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                  request = service.files().get_media(fileId=file_id)
+                  target_file = f"temp_drive/{clean_name}"
+              else:
+                  continue
+
+              with io.FileIO(target_file, 'wb') as fh:
+                  downloader = MediaIoBaseDownload(fh, request)
+                  done = False
+                  while not done:
+                      status, done = downloader.next_chunk()
+          EOF
+
+      - name: Compile to Root HTML and Route Media to images/
+        run: |
+          mkdir -p images
+
+          for doc in temp_drive/*.docx; do
+            [ -e "$doc" ] || continue
+            filename=$(basename "$doc" .docx)
+
+            # Prevent overwriting your portfolio index.html
+            if [ "$filename" = "index" ]; then
+              echo "Skipping index.docx to protect root index.html."
+              continue
+            fi
+
+            # Compile directly to root HTML and extract media into images
+            pandoc "$doc" \
+              --from docx \
+              --to html \
+              --template="template.html" \
+              --extract-media="images" \
+              --metadata title="$filename" \
+              -o "$filename.html"
+
+            # Flatten Pandoc's generated subfolder: images/media/* -> images/*
+            if [ -d "images/media" ]; then
+              mv images/media/* images/ 2>/dev/null || true
+              rmdir images/media 2>/dev/null || true
+            fi
+
+            # Correct HTML image src attributes from images/media/ to images/
+            sed -i 's|images/media/|images/|g' "$filename.html"
+
+            git add "$filename.html"
+          done
+
+          rm -rf temp_drive
+          git add images/
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --staged --quiet; then
+            echo "No weekly updates to push."
+          else
+            git commit -m "chore(blog): auto-publish weekly blog pages [$(date +'%Y-%m-%d')]"
+            git push origin main
+          fi
