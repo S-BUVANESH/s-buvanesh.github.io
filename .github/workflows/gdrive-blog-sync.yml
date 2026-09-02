@@ -105,16 +105,16 @@ jobs:
         if: steps.fetch_doc.outputs.status == 'proceed'
         run: |
           DOCX_FILE="${{ steps.fetch_doc.outputs.docx_file }}"
-          mkdir -p Assets
+          mkdir -p assets
 
-          # Convert docx to markdown while extracting images into Assets/
-          pandoc "$DOCX_FILE" -t markdown --extract-media="Assets" -o "stream.md"
+          # Convert docx to markdown while extracting images into assets/
+          pandoc "$DOCX_FILE" -t markdown --extract-media="assets" -o "stream.md"
 
-          # Flatten pandoc's nested media directory (Assets/media/* -> Assets/*)
-          if [ -d "Assets/media" ]; then
-            mv Assets/media/* Assets/ 2>/dev/null || true
-            rmdir Assets/media 2>/dev/null || true
-            sed -i 's|Assets/media/|Assets/|g' stream.md
+          # Flatten pandoc's nested media directory (assets/media/* -> assets/*)
+          if [ -d "assets/media" ]; then
+            mv assets/media/* assets/ 2>/dev/null || true
+            rmdir assets/media 2>/dev/null || true
+            sed -i 's|assets/media/|assets/|g' stream.md
           fi
 
       - name: Compile Themed HTML via Gemini Engine
@@ -136,7 +136,7 @@ jobs:
           with open("stream.md", "r", encoding="utf-8") as f:
               stream_md = f.read()
 
-          available_images = os.listdir("Assets") if os.path.exists("Assets") else []
+          available_images = os.listdir("assets") if os.path.exists("assets") else []
 
           prompt = f"""
           You are an automated frontend compiler. Your job is to convert raw chronological Markdown text into a fully styled HTML dossier page matching the provided template.
@@ -146,9 +146,9 @@ jobs:
           2. Map the narrative stream into the template's designated structure ($TITLE$, $BODY$, $STATS_GRID$, $TAKEAWAYS$, $GALLERY_ITEMS$, etc. or equivalent HUD components):
              - Chapter blocks must use: <article class="chapter-card liquid-glass hud-brackets">
              - Quotes must use: <div class="quote-callout">
-             - Narrative images must use: <div class="image-block"><img src="Assets/<filename>" loading="lazy"></div>
+             - Narrative images must use: <div class="image-block"><img src="assets/<filename>" loading="lazy"></div>
              - Trailing photos must be placed in: <div class="gallery-grid"> with <div class="gallery-item">
-          3. Ensure ALL image src attributes link directly to 'Assets/<filename>' using only the actual filenames extracted: {available_images}.
+          3. Ensure ALL image src attributes link directly to 'assets/<filename>' using only the actual filenames extracted: {available_images}.
           4. Ensure all back buttons link to 'index.html#experience'.
           5. Return ONLY the complete, raw HTML file without any markdown wrappers, commentary, or backticks.
 
@@ -203,7 +203,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           TARGET_WEEK=$(printf "%02d" ${{ steps.fetch_doc.outputs.target_week }})
-          git add "Week_${TARGET_WEEK}_Blog.html" Assets/
+          git add "Week_${TARGET_WEEK}_Blog.html" assets/
           if git diff --staged --quiet; then
             echo "No structural modifications detected to commit."
           else
