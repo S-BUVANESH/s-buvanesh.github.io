@@ -2,15 +2,15 @@ name: Weekly Google Drive Blog Synchronisation
 
 on:
   schedule:
-    # 01:30 UTC = 07:00 IST every Monday
+    # 01:30 UTC = 07:00 IST every Monday morning
     - cron: '30 1 * * 1'
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger testing from the Actions tab
 
 permissions:
   contents: write
 
 jobs:
-  sync-and-publish:
+  sync-and-compile:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,26 +19,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Environment & Dependencies
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install System and Python Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc
-          python -m pip install --upgrade pip
-          pip install google-api-python-client google-auth
+          pip install google-api-python-client google-auth requests
 
-      - name: Download Documents from Google Drive
+      - name: Fetch Target Week Document from Google Drive
+        id: fetch_doc
         env:
           GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: |
-          mkdir -p temp_drive
-
           python - << 'EOF'
-          import os, json, io
+          import os, sys, json, io, re
           from google.oauth2 import service_account
           from googleapiclient.discovery import build
           from googleapiclient.http import MediaIoBaseDownload
 
+          # 1. Determine target week by inspecting root HTML files
+          root_files = os.listdir('.')
+          existing_weeks = []
+          for f in root_files:
+              match = re.search(r'Week[_\-\s]*0*(\d+)', f, re.IGNORECASE)
+              if match and f.endswith('.html') and not f.startswith('template'):
+                  existing_weeks.append(int(match.group(1)))
+
+          target_week = max(existing_weeks) + 1 if existing_weeks else 1
+          print(f"Target week identified: Week {target_week:02d}")
+
+          # 2. Authenticate and query the ProtoSem Google Drive folder
           key_info = json.loads(os.environ["GDRIVE_SA_KEY"])
           folder_id = os.environ["GDRIVE_FOLDER_ID"]
 
@@ -51,75 +66,148 @@ jobs:
           results = service.files().list(q=query, fields="files(id, name, mimeType)").execute()
           items = results.get('files', [])
 
-          for item in items:
-              file_id = item['id']
-              clean_name = item['name'].replace(" ", "_")
+          # 3. Match filename variation for target week (e.g., 'Week 2', 'Week_02', 'w2')
+          pattern = re.compile(rf'(?:week|w)[_\-\s]*0*{target_week}\b', re.IGNORECASE)
+          matched_file = next((item for item in items if pattern.search(item['name'])), None)
 
-              if item['mimeType'] == 'application/vnd.google-apps.document':
-                  request = service.files().export_media(
-                      fileId=file_id, 
-                      mimeType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                  )
-                  target_file = f"temp_drive/{os.path.splitext(clean_name)[0]}.docx"
-              elif item['mimeType'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                  request = service.files().get_media(fileId=file_id)
-                  target_file = f"temp_drive/{clean_name}"
-              else:
-                  continue
+          if not matched_file:
+              print(f"Notice: Week {target_week:02d} document not found in ProtoSem folder. Exiting cleanly.")
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+                  out.write("status=skip\n")
+              sys.exit(0)
 
-              with io.FileIO(target_file, 'wb') as fh:
-                  downloader = MediaIoBaseDownload(fh, request)
-                  done = False
-                  while not done:
-                      status, done = downloader.next_chunk()
+          print(f"Located candidate document: {matched_file['name']}")
+          file_id = matched_file['id']
+          out_path = f"raw_week_{target_week:02d}.docx"
+
+          if matched_file['mimeType'] == 'application/vnd.google-apps.document':
+              req = service.files().export_media(
+                  fileId=file_id,
+                  mimeType='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+              )
+          else:
+              req = service.files().get_media(fileId=file_id)
+
+          with io.FileIO(out_path, 'wb') as fh:
+              downloader = MediaIoBaseDownload(fh, req)
+              done = False
+              while not done:
+                  _, done = downloader.next_chunk()
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write("status=proceed\n")
+              out.write(f"target_week={target_week}\n")
+              out.write(f"docx_file={out_path}\n")
           EOF
 
-      - name: Compile to Root HTML and Route Media to images/
+      - name: Extract Visual Assets and Flatten Paths
+        if: steps.fetch_doc.outputs.status == 'proceed'
         run: |
+          DOCX_FILE="${{ steps.fetch_doc.outputs.docx_file }}"
           mkdir -p images
 
-          for doc in temp_drive/*.docx; do
-            [ -e "$doc" ] || continue
-            filename=$(basename "$doc" .docx)
+          # Convert docx to markdown while extracting images into images/
+          pandoc "$DOCX_FILE" -t markdown --extract-media="images" -o "stream.md"
 
-            # Prevent overwriting your portfolio index.html
-            if [ "$filename" = "index" ]; then
-              echo "Skipping index.docx to protect root index.html."
-              continue
-            fi
+          # Flatten pandoc's nested media directory (images/media/* -> images/*)
+          if [ -d "images/media" ]; then
+            mv images/media/* images/ 2>/dev/null || true
+            rmdir images/media 2>/dev/null || true
+            sed -i 's|images/media/|images/|g' stream.md
+          fi
 
-            # Compile directly to root HTML and extract media into images
-            pandoc "$doc" \
-              --from docx \
-              --to html \
-              --template="template.html" \
-              --extract-media="images" \
-              --metadata title="$filename" \
-              -o "$filename.html"
+      - name: Compile Themed HTML via Gemini Engine
+        if: steps.fetch_doc.outputs.status == 'proceed'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TARGET_WEEK: ${{ steps.fetch_doc.outputs.target_week }}
+        run: |
+          python - << 'EOF'
+          import os, json, requests
 
-            # Flatten Pandoc's generated subfolder: images/media/* -> images/*
-            if [ -d "images/media" ]; then
-              mv images/media/* images/ 2>/dev/null || true
-              rmdir images/media 2>/dev/null || true
-            fi
+          api_key = os.environ["GEMINI_API_KEY"]
+          target_week = int(os.environ["TARGET_WEEK"])
+          output_filename = f"Week_{target_week:02d}_Blog.html"
 
-            # Correct HTML image src attributes from images/media/ to images/
-            sed -i 's|images/media/|images/|g' "$filename.html"
+          with open("template.html", "r", encoding="utf-8") as f:
+              template_html = f.read()
 
-            git add "$filename.html"
-          done
+          with open("stream.md", "r", encoding="utf-8") as f:
+              stream_md = f.read()
 
-          rm -rf temp_drive
-          git add images/
+          available_images = os.listdir("images") if os.path.exists("images") else []
 
-      - name: Commit and Push Changes
+          prompt = f"""
+          You are an automated frontend compiler. Your job is to convert raw chronological Markdown text into a fully styled HTML dossier page matching the provided template.
+
+          ### INSTRUCTIONS:
+          1. Retain the exact styles, CSS variables, Google Fonts, header/nav, theme-picker, and scripts from TEMPLATE.HTML.
+          2. Map the narrative stream into the template's designated structure ($TITLE$, $BODY$, $STATS_GRID$, $TAKEAWAYS$, $GALLERY_ITEMS$, etc. or equivalent HUD components):
+             - Chapter blocks must use: <article class="chapter-card liquid-glass hud-brackets">
+             - Quotes must use: <div class="quote-callout">
+             - Narrative images must use: <div class="image-block"><img src="images/<filename>" loading="lazy"></div>
+             - Trailing photos must be placed in: <div class="gallery-grid"> with <div class="gallery-item">
+          3. Ensure ALL image src attributes link directly to 'images/<filename>' using only the actual filenames extracted: {available_images}.
+          4. Ensure all back buttons link to 'index.html#experience'.
+          5. Return ONLY the complete, raw HTML file without any markdown wrappers, commentary, or backticks.
+
+          ### TEMPLATE.HTML:
+          {template_html}
+
+          ### RAW CONTENT STREAM (WEEK {target_week:02d}):
+          {stream_md}
+          """
+
+          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+          headers = {"Content-Type": "application/json"}
+          payload = {
+              "contents": [{"parts": [{"text": prompt}]}],
+              "generationConfig": {
+                  "temperature": 0.1,
+                  "maxOutputTokens": 8192
+              }
+          }
+
+          response = requests.post(url, headers=headers, json=payload)
+          response_data = response.json()
+
+          if "candidates" not in response_data:
+              print("Gemini API compilation error:", response_data)
+              exit(1)
+
+          generated_html = response_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+          # Strip accidental markdown code fences if present
+          if generated_html.startswith("```html"):
+              generated_html = generated_html[7:]
+          if generated_html.startswith("```"):
+              generated_html = generated_html[3:]
+          if generated_html.endswith("```"):
+              generated_html = generated_html[:-3]
+
+          with open(output_filename, "w", encoding="utf-8") as f:
+              f.write(generated_html.strip())
+
+          print(f"Successfully compiled: {output_filename}")
+          EOF
+
+      - name: Clean Up Intermediary Artifacts
+        if: steps.fetch_doc.outputs.status == 'proceed'
+        run: |
+          rm -f raw_week_*.docx stream.md
+
+      - name: Commit and Publish to Portfolio
+        if: steps.fetch_doc.outputs.status == 'proceed'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          TARGET_WEEK=$(printf "%02d" ${{ steps.fetch_doc.outputs.target_week }})
+          git add "Week_${TARGET_WEEK}_Blog.html" images/
+
           if git diff --staged --quiet; then
-            echo "No weekly updates to push."
+            echo "No structural modifications detected to commit."
           else
-            git commit -m "chore(blog): auto-publish weekly blog pages [$(date +'%Y-%m-%d')]"
+            git commit -m "feat(blog): publish autonomous Week ${TARGET_WEEK} dossier [$(date +'%Y-%m-%d')]"
             git push origin main
           fi
