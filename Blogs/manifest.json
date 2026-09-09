@@ -90,16 +90,16 @@
   "01": {
     "hasContent": true,
     "daysWithContent": 1,
-    "imageCount": 4,
+    "imageCount": 3,
     "title": "My First Automated Portfolio Entry",
     "date": "2026-09-09",
     "url": "Blogs/Week_01.html"
   },
   "02": {
-    "hasContent": false,
-    "daysWithContent": 0,
+    "hasContent": true,
+    "daysWithContent": 1,
     "imageCount": 0,
-    "title": "Week 02 Review",
+    "title": "My First Automated Portfolio Entry",
     "date": "2026-09-09",
     "url": "Blogs/Week_02.html"
   },
