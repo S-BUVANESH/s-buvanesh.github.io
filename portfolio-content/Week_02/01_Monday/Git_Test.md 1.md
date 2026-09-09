@@ -1,8 +1,8 @@
 ---
-title: "My First Automated Portfolio Entry"
-date: "2026-09-09"
+title: My First Automated Portfolio Entry
+date: 2026-09-09
 week: 1
-day: "Tuesday"
+day: monday
 tags:
   - portfolio
   - learning
@@ -18,7 +18,7 @@ Today I tested my new **Obsidian → GitHub → Portfolio** workflow.
 I created this Markdown file directly inside Obsidian and placed it in my Tuesday folder.
 
 The goal is to make my portfolio workflow completely automated.
-![[4714774605908547 3.jpg]]
+
 ## The Pipeline
 
 ```text
