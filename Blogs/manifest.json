@@ -82,16 +82,16 @@
   "00": {
     "hasContent": true,
     "daysWithContent": 5,
-    "imageCount": 10,
+    "imageCount": 11,
     "title": "From Strangers to a Squad.",
     "date": "2026-08-21",
     "url": "Blogs/Week_00.html"
   },
   "01": {
-    "hasContent": false,
-    "daysWithContent": 0,
-    "imageCount": 0,
-    "title": "Week 01 Review",
+    "hasContent": true,
+    "daysWithContent": 1,
+    "imageCount": 4,
+    "title": "My First Automated Portfolio Entry",
     "date": "2026-09-09",
     "url": "Blogs/Week_01.html"
   },
