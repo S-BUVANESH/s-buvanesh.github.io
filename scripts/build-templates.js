@@ -9,6 +9,7 @@ const MANIFEST_PATH = path.join(OUTPUT_DIR, 'manifest.json');
 
 const DAY_NAMES = ['01_Monday','02_Tuesday','03_Wednesday','04_Thursday','05_Friday','06_Saturday'];
 const IMAGE_RE = /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i;
+const MODEL_RE = /\.(glb)$/i;
 
 const esc = (value = '') => String(value)
   .replace(/&/g, '&amp;')
@@ -28,14 +29,38 @@ const inline = (value) => {
   s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
   s = s.replace(/(^|[^\*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  s = s.replace(/\{\{3D_MODEL:([^}]+)\}\}/g, (_, file) => modelViewer(file));
   return s;
 };
 
 let currentImagePrefix = '';
+let currentAssetPrefix = '';
 
 const imageUrl = (filename) => {
   const safe = filename.trim();
   return `${currentImagePrefix}/${encodeURIComponent(safe)}`;
+};
+
+const modelUrl = (filename) => {
+  const safe = filename.trim();
+  return `${currentAssetPrefix}/${encodeURIComponent(safe)}`;
+};
+
+const modelViewer = (filename) => {
+  const safe = filename.trim();
+  const src = modelUrl(safe);
+  const label = esc(safe);
+  return `<div class="model-card">
+  <div class="model-card-head">
+    <div>
+      <div class="model-card-kicker">INTERACTIVE 3D MODEL</div>
+      <div class="model-card-title">${label}</div>
+    </div>
+    <div class="model-card-hint">DRAG · ROTATE · SCROLL TO ZOOM</div>
+  </div>
+  <model-viewer src="${src}" alt="Interactive 3D model — ${label}" camera-controls auto-rotate rotation-per-second="18deg" touch-action="pan-y" shadow-intensity="1" exposure="1" environment-image="neutral"></model-viewer>
+  <div class="model-card-foot">The model can be rotated, zoomed and inspected directly in the browser.</div>
+</div>`;
 };
 
 function stripFrontmatter(md) {
@@ -167,7 +192,8 @@ function processWeek(weekIndex) {
     const files = fs.readdirSync(dayPath);
     const markdownFiles = files.filter(f => f.toLowerCase().endsWith('.md') && f.toLowerCase() !== 'readme.md').sort();
     const imageFiles = files.filter(f => IMAGE_RE.test(f)).sort();
-    if (!markdownFiles.length && !imageFiles.length) continue;
+    const modelFiles = files.filter(f => MODEL_RE.test(f)).sort();
+    if (!markdownFiles.length && !imageFiles.length && !modelFiles.length) continue;
 
     hasContent = true;
     daysWithContent++;
@@ -180,7 +206,12 @@ function processWeek(weekIndex) {
       imageCount++;
     }
 
+    for (const model of modelFiles) {
+      fs.copyFileSync(path.join(dayPath, model), path.join(dayOut, model));
+    }
+
     currentImagePrefix = `assets/weekly/${weekName}/${day}`;
+    currentAssetPrefix = `assets/weekly/${weekName}/${day}`;
     let dayHtml = `<section class="day"><div class="day-kicker">${esc(day.replace(/^\d+_/, ''))}</div>`;
 
     for (const mdFile of markdownFiles) {
@@ -227,10 +258,11 @@ function processWeek(weekIndex) {
 <meta name="description" content="Weekly engineering field notes — ${esc(title)}">
 <style>
 :root{--bg:#020612;--panel:rgba(8,20,48,.72);--gold:#D4AF37;--gold2:#F7E7A9;--cyan:#00F0FF;--text:#F8FAFC;--muted:#94A3B8;--line:rgba(212,175,55,.22)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% 0%,#081738 0%,#020716 55%,#01030a 100%);color:var(--muted);font:400 17px/1.8 Outfit,system-ui,sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.45;background-image:radial-gradient(rgba(212,175,55,.08) 1px,transparent 1px);background-size:40px 40px}.wrap{width:min(1120px,92%);margin:auto;position:relative}.nav{position:sticky;top:0;z-index:10;padding:16px 0;background:rgba(2,6,18,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{color:var(--gold2);font:700 14px "Cinzel",serif;letter-spacing:.12em}.back{font:700 11px "Space Mono",monospace;color:var(--gold);padding:8px 12px;border:1px solid var(--line);text-decoration:none}.hero{padding:90px 0 55px}.kicker,.day-kicker,.note-source,.gallery-title,.empty-mark{font:700 11px/1.5 "Space Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}h1{font:800 clamp(40px,6vw,76px)/1.02 Cinzel,serif;color:var(--text);margin:14px 0 18px}h2{font:700 32px/1.2 Cinzel,serif;color:var(--text);margin:18px 0 10px}h3,h4{color:var(--gold2);font-family:Outfit,sans-serif}a{color:var(--cyan)}main{padding-bottom:100px}.day,.note,.gallery,.empty{background:var(--panel);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.28);padding:28px;margin:24px 0}.day{border-left:2px solid var(--gold)}.day-kicker{margin-bottom:10px}.note{margin:18px 0;background:rgba(3,10,26,.62)}.note-source{color:var(--muted);margin-bottom:15px;font-size:10px}.note p{margin:12px 0}.note ul{padding-left:24px}.note li{margin:5px 0}.note blockquote{margin:20px 0;padding:18px 20px;border-left:3px solid var(--gold);background:rgba(212,175,55,.06);color:var(--gold2)}.note code{color:var(--gold2);background:rgba(255,255,255,.06);padding:2px 5px}.note pre{overflow:auto;padding:18px;background:#01030a;border:1px solid var(--line)}.md-image{display:block;max-width:100%;height:auto;margin:20px auto;border:1px solid var(--line)}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:16px}.gallery figure{margin:0;background:rgba(0,0,0,.18);border:1px solid var(--line)}.gallery-image{width:100%;aspect-ratio:4/3;object-fit:cover}.gallery figcaption{padding:9px 10px;font:10px "Space Mono",monospace;color:var(--muted);word-break:break-word}.empty{text-align:center;padding:80px 30px}.empty h2{margin-bottom:12px}.footer{padding:40px 0;color:var(--muted);font:11px "Space Mono",monospace;text-align:center;border-top:1px solid var(--line)}@media(max-width:700px){body{font-size:16px}.hero{padding-top:55px}.day,.note,.gallery,.empty{padding:20px}h2{font-size:26px}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% 0%,#081738 0%,#020716 55%,#01030a 100%);color:var(--muted);font:400 17px/1.8 Outfit,system-ui,sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.45;background-image:radial-gradient(rgba(212,175,55,.08) 1px,transparent 1px);background-size:40px 40px}.wrap{width:min(1120px,92%);margin:auto;position:relative}.nav{position:sticky;top:0;z-index:10;padding:16px 0;background:rgba(2,6,18,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{color:var(--gold2);font:700 14px "Cinzel",serif;letter-spacing:.12em}.back{font:700 11px "Space Mono",monospace;color:var(--gold);padding:8px 12px;border:1px solid var(--line);text-decoration:none}.hero{padding:90px 0 55px}.kicker,.day-kicker,.note-source,.gallery-title,.empty-mark{font:700 11px/1.5 "Space Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}h1{font:800 clamp(40px,6vw,76px)/1.02 Cinzel,serif;color:var(--text);margin:14px 0 18px}h2{font:700 32px/1.2 Cinzel,serif;color:var(--text);margin:18px 0 10px}h3,h4{color:var(--gold2);font-family:Outfit,sans-serif}a{color:var(--cyan)}main{padding-bottom:100px}.day,.note,.gallery,.empty{background:var(--panel);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.28);padding:28px;margin:24px 0}.day{border-left:2px solid var(--gold)}.day-kicker{margin-bottom:10px}.note{margin:18px 0;background:rgba(3,10,26,.62)}.note-source{color:var(--muted);margin-bottom:15px;font-size:10px}.note p{margin:12px 0}.note ul{padding-left:24px}.note li{margin:5px 0}.note blockquote{margin:20px 0;padding:18px 20px;border-left:3px solid var(--gold);background:rgba(212,175,55,.06);color:var(--gold2)}.note code{color:var(--gold2);background:rgba(255,255,255,.06);padding:2px 5px}.note pre{overflow:auto;padding:18px;background:#01030a;border:1px solid var(--line)}.md-image{display:block;max-width:100%;height:auto;margin:20px auto;border:1px solid var(--line)}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:16px}.model-card{margin:28px 0;border:1px solid var(--line);background:linear-gradient(180deg,rgba(0,240,255,.035),rgba(3,10,26,.55));box-shadow:0 18px 45px rgba(0,0,0,.3);overflow:hidden}.model-card-head{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:15px 18px;border-bottom:1px solid var(--line);background:rgba(2,6,18,.7)}.model-card-kicker{font:700 10px/1.4 "Space Mono",monospace;letter-spacing:.17em;color:var(--cyan)}.model-card-title{margin-top:4px;color:var(--gold2);font:700 13px/1.4 "Space Mono",monospace}.model-card-hint{font:700 9px/1.5 "Space Mono",monospace;letter-spacing:.14em;color:var(--muted);text-align:right}.model-card model-viewer{display:block;width:100%;height:min(68vh,620px);min-height:420px;background:radial-gradient(circle at 50% 42%,rgba(0,240,255,.09),rgba(2,6,18,.98) 70%)}.model-card-foot{padding:12px 18px;border-top:1px solid var(--line);font:10px/1.6 "Space Mono",monospace;color:var(--muted)}.gallery figure{margin:0;background:rgba(0,0,0,.18);border:1px solid var(--line)}.gallery-image{width:100%;aspect-ratio:4/3;object-fit:cover}.gallery figcaption{padding:9px 10px;font:10px "Space Mono",monospace;color:var(--muted);word-break:break-word}.empty{text-align:center;padding:80px 30px}.empty h2{margin-bottom:12px}.footer{padding:40px 0;color:var(--muted);font:11px "Space Mono",monospace;text-align:center;border-top:1px solid var(--line)}@media(max-width:700px){body{font-size:16px}.hero{padding-top:55px}.day,.note,.gallery,.empty{padding:20px}h2{font-size:26px}.model-card-head{align-items:flex-start;flex-direction:column}.model-card-hint{text-align:left}.model-card model-viewer{height:62vh;min-height:340px}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
 <header class="nav"><div class="wrap nav-inner"><div class="brand">BUVANESH S. · ENGINEERING LOG</div><a class="back" href="../index.html#experience">← PORTFOLIO</a></div></header>

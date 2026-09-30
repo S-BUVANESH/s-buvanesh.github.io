@@ -102,6 +102,14 @@ Bambu Lab also highlights the H2S's **23 sensors and three onboard cameras**, al
 
 > The headline speed is a machine capability, not a promise that every model should be printed at 1,000 mm/s. Geometry, material, layer height, extrusion flow, cooling and acceleration limits still determine the practical print settings.
 
+## Interactive 3D Model
+
+This is the **3D model used for the printing exercise**, converted from the original STL into a browser-friendly GLB format for interactive inspection.
+
+{{3D_MODEL:Buvanesh.glb}}
+
+You can **drag to rotate**, **scroll to zoom**, and inspect the geometry from different angles. This gives the portfolio entry a direct connection between the digital model and the physical fabrication process.
+
 ## Software: Bambu Studio
 
 I used **Bambu Studio** to prepare the wallet for printing.
