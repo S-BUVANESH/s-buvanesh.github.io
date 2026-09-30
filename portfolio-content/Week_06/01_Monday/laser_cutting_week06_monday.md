@@ -123,7 +123,9 @@ The same DXF geometry produced two different physical outcomes:
 |---|---|---|
 | **01** | Black Acrylic | Strong, solid contrast |
 | **02** | Transparent Acrylic | Light, translucent appearance |
+![[ARTHUR SWartz.jpeg]]
 
+![[Arthur White.jpeg]]
 The geometry stayed constant; the **material changed the visual result**.
 
 ## What I Took Away
