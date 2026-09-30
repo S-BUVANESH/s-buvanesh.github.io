@@ -16,12 +16,546 @@
 <header class="nav"><div class="wrap nav-inner"><div class="brand">BUVANESH S. · ENGINEERING LOG</div><a class="back" href="../index.html#experience">← PORTFOLIO</a></div></header>
 <div class="wrap">
 <header class="hero">
-<div class="kicker">WEEK 06 · READY</div>
+<div class="kicker">WEEK 06 · PUBLISHED DOSSIER</div>
 <h1>Week 06 Review</h1>
 <p>Chronological learning notes, experiments, technical reflections and visual field evidence.</p>
-<p class="kicker">DATE · 2026-09-28</p>
+<p class="kicker">DATE · 2026-09-30</p>
 </header>
-<main id="gallery"><section class="empty"><div class="empty-mark">WAITING FOR NOTES</div><h2>This week is ready for your next field entry.</h2><p>Drop Markdown notes and images into the appropriate day folder in <code>portfolio-content/Week_06/</code>, then commit/push.</p></section></main>
-<footer class="footer">GENERATED FROM OBSIDIAN · 2026-09-28</footer>
+<main id="gallery"><section class="day"><div class="day-kicker">Monday</div><div class="note"><div class="note-source">Weekly_Portfolio_Update_Laser_Cutting.md</div><h1>Weekly Portfolio Update — Laser Cutting \&amp; 3D Printing</h1>
+<blockquote>
+<p>\<em>\</em>Weekly Focus:\<em>\</em> Digital fabrication through \<em>\</em>laser cutting\<em>\</em> and \<em>\</em>additive manufacturing (3D printing)\<em>\</em></p>
+<p>\<em>\</em>Core outcome:\<em>\</em> Converted digital designs into physical prototypes using a CO₂ laser cutter and a Bambu Lab H2S FDM 3D printer.</p>
+</blockquote>
+<p>\---</p>
+<h2>1\. Overview</h2>
+<p>This week focused on two important digital-fabrication processes:</p>
+<p>1. <strong>Laser Cutting</strong> — transforming a 2D digital illustration into a physical acrylic design using a CO₂ laser cutter. 2. <strong>3D Printing</strong> — transforming a downloadable 3D model into a functional physical object using FDM/FFF additive manufacturing.</p>
+<p>Both workflows followed the same broad manufacturing pipeline:</p>
+<p><strong>Digital Concept → File Preparation → Machine/Slicer Setup → Process Parameters → Fabrication → Physical Prototype</strong></p>
+<p>The major difference is that laser cutting generally works by <strong>selectively removing or cutting material from a sheet</strong>, while 3D printing <strong>adds material layer by layer</strong> to build a three-dimensional object.</p>
+<p>\---</p>
+<h1>2\. Laser Cutting</h1>
+<h2>2.1 What is Laser Cutting?</h2>
+<p><strong>Laser cutting</strong> is a subtractive digital-fabrication process in which a focused laser beam is used to cut, engrave, or mark a material according to a digital design.</p>
+<p>The laser concentrates a large amount of energy into a very small area. Depending on the material, power, speed, and operating mode, the material may be:</p>
+<ul>
+<li>melted,</li>
+<li>vaporized,</li>
+<li>burned,</li>
+<li>ablated, or</li>
+<li>thermally separated.</li>
+</ul>
+<p>A computer-controlled motion system moves the laser along the programmed path, allowing complex geometries and detailed artwork to be reproduced with high precision.</p>
+<h3>Basic Working Principle</h3>
+<pre><code>Digital Design
+      ↓
+Vector / Raster Preparation
+      ↓
+Machine Software
+      ↓
+Laser Beam Generation
+      ↓
+Controlled Motion of Laser Head
+      ↓
+Material Cutting / Engraving
+      ↓
+Finished Physical Part</code></pre>
+<p>\---</p>
+<h2>2.2 Major Laser-Cutting Methods</h2>
+<p>Laser processing can be understood by <strong>how the material is removed</strong> and by the <strong>type of laser source</strong> being used.</p>
+<h3>A. Vaporization</h3>
+<p>The laser raises the material directly to a temperature at which it vaporizes.</p>
+<p><strong>Typical use:</strong> very fine cutting, engraving, and applications involving thin materials.</p>
+<h3>B. Melting and Blow-Off</h3>
+<p>The laser melts the material and an assist gas removes the molten material from the kerf.</p>
+<p><strong>Typical use:</strong> metals and industrial sheet cutting.</p>
+<h3>C. Combustion / Flame Cutting</h3>
+<p>The laser initiates heating and the material reacts with oxygen, producing additional heat that assists the cut.</p>
+<p><strong>Typical use:</strong> certain metals and oxygen-assisted industrial cutting.</p>
+<h3>D. Thermal Stress Cracking</h3>
+<p>The laser creates a controlled thermal gradient that produces stress and causes the material to fracture along a desired path.</p>
+<p><strong>Typical use:</strong> brittle materials such as glass and some ceramics.</p>
+<h3>E. Ablation</h3>
+<p>The laser removes a very thin layer of material through rapid heating and vaporization.</p>
+<p><strong>Typical use:</strong> surface marking, micromachining, and high-detail material removal.</p>
+<p>\---</p>
+<h2>2.3 Types of Laser Cutting Systems</h2>
+<p>Another common classification is by the <strong>laser source</strong>.</p>
+<p>|Laser Type|Typical Wavelength Region|Common Applications| |-|-:|-| |<strong>CO₂ Laser</strong>|Infrared (\~10.6 µm)|Acrylic, wood, MDF, paper, plastics, leather, textiles, engraving| |<strong>Fiber Laser</strong>|Near-infrared (\~1.06–1.07 µm)|Metals, marking, industrial metal cutting| |<strong>Nd:YAG / Nd-based Lasers</strong>|Near-infrared|Marking, micromachining, welding, specialized cutting|</p>
+<h3>Laser Cutting Operation Modes</h3>
+<p>For a fabrication workflow, the software may distinguish between:</p>
+<ul>
+<li><strong>Scan / Engrave:</strong> raster-style movement used to mark or engrave an area.</li>
+<li><strong>Cut:</strong> follows vector paths to cut completely through the material.</li>
+<li><strong>Combined workflows:</strong> use engraving/scanning and cutting in the same job.</li>
+</ul>
+<p>\---</p>
+<h1>3\. Our Laser-Cutting Workflow</h1>
+<h2>3.1 Material</h2>
+<p>I worked with <strong>acrylic sheet</strong> and created two physical variants:</p>
+<ul>
+<li><strong>Black Acrylic</strong></li>
+<li><strong>Transparent Acrylic</strong></li>
+</ul>
+<p>Using two different acrylic finishes helped compare how the same geometry behaves visually on different materials.</p>
+<p>\---</p>
+<h2>3.2 Software Used — RDWorks V8</h2>
+<p><strong>RDWorks V8</strong> was used to prepare and control the laser-cutting job.</p>
+<p>The software was used for tasks such as:</p>
+<ul>
+<li>importing the prepared vector file,</li>
+<li>positioning the artwork,</li>
+<li>defining cutting and scan/engraving operations,</li>
+<li>assigning different processing modes,</li>
+<li>arranging the design on the material,</li>
+<li>setting the required machine parameters,</li>
+<li>and sending the final job to the laser cutter.</li>
+</ul>
+<p>\---</p>
+<h2>3.3 Arthur Morgan Design Preparation</h2>
+<p>The laser-cut project started from an <strong>online reference image of Arthur Morgan</strong>.</p>
+<p>The workflow was:</p>
+<pre><code>Online Reference Image
+        ↓
+Image Converted into Illustration
+        ↓
+Illustration Simplified for Fabrication
+        ↓
+Vector Conversion
+        ↓
+DXF Export
+        ↓
+Import into RDWorks V8
+        ↓
+Scan + Cut Operations
+        ↓
+Laser Cutting
+        ↓
+Acrylic Prototype</code></pre>
+<h3>Step-by-Step</h3>
+<h3>Step 1 — Reference Image</h3>
+<p>I selected a suitable image of <strong>Arthur Morgan</strong> as the visual reference.</p>
+<p>The original image was not directly sent to the laser cutter because a laser cutting system requires geometry that can be interpreted as paths or raster information.</p>
+<h3>Step 2 — Illustration Conversion</h3>
+<p>The image was transformed into a <strong>stylized illustration</strong>.</p>
+<p>This step was important because the final design had to be simplified enough for fabrication while still retaining the recognisable visual features of the subject.</p>
+<h3>Step 3 — Vectorization</h3>
+<p>The illustration was converted into vector geometry so that the outlines could be used for fabrication.</p>
+<h3>Step 4 — DXF Conversion</h3>
+<p>The vector design was exported as a <strong>DXF (Drawing Exchange Format)</strong> file.</p>
+<p>DXF is widely used to exchange 2D geometric data between CAD, drafting, vector, and fabrication software.</p>
+<h3>Step 5 — Import into RDWorks V8</h3>
+<p>The DXF file was imported into <strong>RDWorks V8</strong>, where the geometry was positioned and prepared for the laser machine.</p>
+<h3>Step 6 — Assigning Processing Modes</h3>
+<p>Different parts of the design were assigned to different operations:</p>
+<ul>
+<li><strong>Scan mode</strong> for engraving / raster-style marking.</li>
+<li><strong>Cut mode</strong> for vector-based cutting through the acrylic.</li>
+</ul>
+<p>This allowed the final piece to contain both detailed surface information and an actual cut outline.</p>
+<p>\---</p>
+<h1>4\. Laser-Cutting Parameters That Matter</h1>
+<p>The quality of a laser cut is not controlled by one parameter alone. Important variables include:</p>
+<p>|Parameter|Effect| |-|-| |<strong>Laser Power</strong>|Controls the amount of energy delivered to the material| |<strong>Cutting Speed</strong>|Controls how long the laser interacts with a location| |<strong>Frequency / Pulse Settings</strong>|Influences energy delivery and edge characteristics| |<strong>Focus</strong>|Determines how concentrated the laser spot is| |<strong>Material Thickness</strong>|Affects the required power-speed combination| |<strong>Air Assist</strong>|Helps control smoke, debris, and cutting performance| |<strong>Path Order</strong>|Can influence heat accumulation and dimensional accuracy|</p>
+<p>For the practical work, the machine was configured according to the acrylic material and the available machine settings rather than using a single universal parameter set.</p>
+<p>\---</p>
+<h1>5\. Advantages of Laser Cutting</h1>
+<h3>Precision</h3>
+<p>Laser systems can reproduce fine outlines and detailed geometry with good repeatability.</p>
+<h3>Digital Workflow</h3>
+<p>A digital design can be transferred directly into a physical fabrication process with minimal manual intervention.</p>
+<h3>Complex Geometry</h3>
+<p>Intricate shapes, lettering, illustrations, holes, and decorative patterns can be produced relatively easily.</p>
+<h3>Fast Prototyping</h3>
+<p>For suitable sheet materials, laser cutting can turn a digital design into a physical prototype very quickly.</p>
+<h3>Repeatability</h3>
+<p>Once the file and machine parameters are established, multiple pieces can be produced consistently.</p>
+<h3>Contactless Processing</h3>
+<p>The laser itself does not physically touch the workpiece during cutting, reducing mechanical tool wear on the material.</p>
+<p>\---</p>
+<h1>6\. Disadvantages of Laser Cutting</h1>
+<h3>Material Restrictions</h3>
+<p>Not every material is safe or suitable for laser processing. Material composition must be verified before fabrication.</p>
+<h3>Heat-Affected Edges</h3>
+<p>Because the process is thermal, edges may show:</p>
+<ul>
+<li>melting,</li>
+<li>discoloration,</li>
+<li>charring,</li>
+<li>or heat-affected zones.</li>
+</ul>
+<h3>Fumes and Smoke</h3>
+<p>Some materials generate smoke and potentially hazardous fumes during processing, so proper ventilation and filtration are essential.</p>
+<h3>Kerf</h3>
+<p>The laser removes a finite width of material. This <strong>kerf</strong> must be considered when designing press-fits, slots, or dimension-critical parts.</p>
+<h3>Equipment Cost</h3>
+<p>Higher-power and industrial laser systems can be expensive to purchase, maintain, and operate.</p>
+<h3>Safety Requirements</h3>
+<p>Laser systems require controlled operation, enclosure/safety measures, appropriate ventilation, and material-specific safety checks.</p>
+<p>\---</p>
+<h1>7\. Laser-Cutting Result</h1>
+<p>Two physical versions of the Arthur Morgan design were produced:</p>
+<p>|Variant|Material|Purpose| |-|-|-| |<strong>Variant 1</strong>|Black Acrylic|High-contrast, solid appearance| |<strong>Variant 2</strong>|Transparent Acrylic|Lighter visual appearance with transparency effects|</p>
+<h3>Key Learning</h3>
+<p>The most important lesson was that <strong>a design that looks good on a screen is not automatically fabrication-ready</strong>.</p>
+<p>The artwork had to be simplified, converted into usable geometry, separated into operations, and tested against the physical behaviour of acrylic.</p>
+<p>\---</p>
+<p>#</p></div></section>
+<section class="day"><div class="day-kicker">Tuesday</div><div class="note"><div class="note-source">Weekly_Portfolio_Update_3D_Printing (1).md</div><h1>8\. 3D Printing</h1>
+<h2>8.1 What is 3D Printing?</h2>
+<p><strong>3D printing</strong> is an <strong>additive manufacturing (AM)</strong> process in which a digital 3D model is converted into a physical object by depositing, curing, or bonding material layer by layer.</p>
+<p>Unlike subtractive manufacturing, where material is removed from a block or sheet, additive manufacturing builds the object from the digital model.</p>
+<pre><code>3D Model
+   ↓
+Slicing
+   ↓
+Layer-by-Layer Toolpath
+   ↓
+Material Deposition / Curing / Fusion
+   ↓
+Physical Object</code></pre>
+<p>The digital model is divided into many thin cross-sections. The printer then creates these layers sequentially until the complete object is formed.</p>
+<p>\---</p>
+<h1>9\. Major Types of 3D Printing</h1>
+<p>3D printing technologies can be classified by the <strong>state of the material</strong> and the mechanism used to create each layer.</p>
+<h2>9.1 Filament-Based Processes</h2>
+<h3>FDM — Fused Deposition Modeling</h3>
+<p>A thermoplastic filament is heated and extruded through a nozzle.</p>
+<p>The nozzle moves along programmed paths and deposits material layer by layer.</p>
+<p><strong>Typical materials:</strong></p>
+<ul>
+<li>PLA</li>
+<li>PETG</li>
+<li>ABS</li>
+<li>ASA</li>
+<li>TPU</li>
+<li>Nylon / PA</li>
+<li>Polycarbonate</li>
+<li>Composite filaments</li>
+</ul>
+<p><strong>Our printer uses this class of process.</strong></p>
+<h3>FFF — Fused Filament Fabrication</h3>
+<p>FFF is the general terminology commonly used for filament extrusion processes. FDM is historically associated with the trademarked terminology of Stratasys, while FFF is widely used as a generic process name.</p>
+<p>\---</p>
+<h2>9.2 Resin-Based Processes</h2>
+<p>These technologies use <strong>liquid photopolymer resin</strong>, which is selectively cured using light.</p>
+<h3>SLA — Stereolithography</h3>
+<p>Uses a focused laser or optical system to cure resin layer by layer.</p>
+<h3>DLP — Digital Light Processing</h3>
+<p>Uses a digital light projector to cure an entire layer or large portion of a layer at once.</p>
+<h3>MSLA / LCD Resin Printing</h3>
+<p>Uses an LCD masking system with a UV light source to cure resin selectively.</p>
+<h3>Characteristics</h3>
+<p>Resin technologies are useful when:</p>
+<ul>
+<li>fine detail is required,</li>
+<li>small complex geometries must be reproduced,</li>
+<li>smooth surfaces are important,</li>
+<li>miniature prototypes are needed.</li>
+</ul>
+<p>\---</p>
+<h1>10\. Powder-Based Processes</h1>
+<p>These processes use powder as the starting material.</p>
+<h3>SLS — Selective Laser Sintering</h3>
+<p>A laser selectively sinters regions of a powder bed to form the object.</p>
+<h3>SLM — Selective Laser Melting</h3>
+<p>A high-energy laser fully melts metal powder in selected regions.</p>
+<h3>DMLS — Direct Metal Laser Sintering</h3>
+<p>A metal additive-manufacturing process using powder fusion, commonly applied to engineering metal parts.</p>
+<h3>Characteristics</h3>
+<p>Powder-based systems are useful for:</p>
+<ul>
+<li>complex geometry,</li>
+<li>functional engineering components,</li>
+<li>lattice structures,</li>
+<li>metal prototypes,</li>
+<li>parts that may be difficult to fabricate using conventional machining.</li>
+</ul>
+<p>\---</p>
+<h1>11\. Other Additive-Manufacturing Families</h1>
+<h3>Material Jetting</h3>
+<p>Liquid photopolymer or other build material is deposited through nozzles and selectively cured.</p>
+<h3>Binder Jetting</h3>
+<p>A liquid binder is selectively deposited onto a powder bed to join particles into a green part, followed by additional processing when required.</p>
+<h3>Sheet Lamination</h3>
+<p>Thin sheets of material are bonded together and cut or formed layer by layer.</p>
+<h3>Directed Energy Deposition (DED)</h3>
+<p>Material, often powder or wire, is deposited directly into a melt pool created by an energy source such as a laser.</p>
+<p>\---</p>
+<h1>12\. Material-State View of 3D Printing</h1>
+<p>A useful way to remember the major technologies is:</p>
+<p>|Material Form|Examples|Representative Processes| |-|-|-| |<strong>Solid filament</strong>|PLA, PETG, ABS|FDM / FFF| |<strong>Liquid resin</strong>|Photopolymer resin|SLA, DLP, MSLA| |<strong>Powder</strong>|Nylon powder, metal powder|SLS, SLM, DMLS| |<strong>Powder + binder</strong>|Ceramic/metal powders|Binder Jetting| |<strong>Sheet</strong>|Polymer/paper/metal sheets|Sheet Lamination| |<strong>Wire / Powder Feed</strong>|Engineering metals|DED|</p>
+<blockquote>
+<p>\<em>\</em>Important terminology:\<em>\</em> The commonly encountered acronyms are \<em>\</em>SLA, SLS, SLM, FDM/FFF, DLP, MSLA, DMLS, DED\<em>\</em>, etc. &quot;SLC&quot; is not one of the main mainstream additive-manufacturing process families; it may refer to a specific vendor or terminology in a particular context.</p>
+</blockquote>
+<p>\---</p>
+<h1>13\. FDM Workflow Used in This Project</h1>
+<p>The actual fabrication workflow was:</p>
+<pre><code>Functional Wallet 3D Model
+        ↓
+Import into Bambu Studio
+        ↓
+Scale to 90%
+        ↓
+Check Weight / Material Usage
+        ↓
+Orient Horizontally
+        ↓
+Configure Supports
+        ↓
+Set Brim
+        ↓
+Set Infill = 10% Grid
+        ↓
+Slice
+        ↓
+Estimated Print Time ≈ 2 Hours
+        ↓
+Print with PLA Basic</code></pre>
+<p>\---</p>
+<h1>14\. Software Used — Bambu Studio</h1>
+<p>The slicing software used was <strong>Bambu Studio</strong>.</p>
+<p>Bambu Studio is a slicer and printer-management application built around project-based workflows and optimized slicing. It supports operations such as:</p>
+<ul>
+<li>importing 3D models,</li>
+<li>scaling,</li>
+<li>orientation,</li>
+<li>auto-arrangement,</li>
+<li>support generation,</li>
+<li>brim generation,</li>
+<li>infill configuration,</li>
+<li>slicing,</li>
+<li>G-code generation,</li>
+<li>previewing toolpaths,</li>
+<li>and printer monitoring.</li>
+</ul>
+<p>Bambu Studio also supports tree, normal, and hybrid support structures, making it suitable for complex model geometry.</p>
+<p>\---</p>
+<h1>15\. Printer Used — Bambu Lab H2S</h1>
+<p>The fabrication was carried out using the <strong>Bambu Lab H2S</strong>, a large-format <strong>single-nozzle FDM 3D printer</strong>.</p>
+<p>The H2S was introduced as a high-speed, large-build-volume single-nozzle machine. Bambu Lab specifies a <strong>340 × 320 × 340 mm</strong> build volume, up to <strong>1,000 mm/s</strong> toolhead speed, and <strong>20,000 mm/s²</strong> maximum toolhead acceleration. citeturn627906view1turn999027search0</p>
+<h2>15.1 Detailed H2S Specifications</h2>
+<p>|Category|Specification| |-|-| |<strong>Printing Technology</strong>|Fused Deposition Modeling (FDM)| |<strong>Build Volume</strong>|<strong>340 × 320 × 340 mm³</strong>| |<strong>Chassis</strong>|Aluminum, steel, plastic and glass| |<strong>Physical Dimensions</strong>|<strong>492 × 514 × 626 mm³</strong>| |<strong>Net Weight</strong>|<strong>30 kg</strong> (standard H2S)| |<strong>Laser Edition Weight</strong>|30.5 kg| |<strong>Hotend</strong>|All-metal| |<strong>Extruder Gear</strong>|Hardened steel| |<strong>Nozzle</strong>|Hardened steel| |<strong>Maximum Nozzle Temperature</strong>|<strong>350 °C</strong>| |<strong>Included Nozzle</strong>|<strong>0.4 mm</strong>| |<strong>Supported Nozzle Sizes</strong>|0.2 / 0.4 / 0.6 / 0.8 mm| |<strong>Filament Diameter</strong>|<strong>1.75 mm</strong>| |<strong>Filament Cutter</strong>|Built-in| |<strong>Extruder Motor</strong>|High-precision PMSM (Permanent Magnet Synchronous Motor)| |<strong>Maximum Heatbed Temperature</strong>|<strong>120 °C</strong>| |<strong>Supported Build Plates</strong>|Textured PEI, Smooth PEI| |<strong>Maximum Toolhead Speed</strong>|<strong>1,000 mm/s</strong>| |<strong>Maximum Toolhead Acceleration</strong>|<strong>20,000 mm/s²</strong>| |<strong>Maximum Flow — Standard Hotend</strong>|<strong>40 mm³/s</strong>| |<strong>Maximum Flow — Optional High-Flow Hotend</strong>|<strong>65 mm³/s</strong>| |<strong>Active Chamber Heating</strong>|Supported| |<strong>Maximum Chamber Temperature</strong>|<strong>65 °C</strong>| |<strong>Pre-filter</strong>|G3| |<strong>HEPA Filter</strong>|H12| |<strong>Activated Carbon Filter</strong>|Granulated coconut-shell activated carbon| |<strong>Live View Camera</strong>|Built-in, 1920 × 1080| |<strong>Toolhead Camera</strong>|Built-in, 1600 × 1200| |<strong>BirdsEye Camera</strong>|3264 × 2448 (Laser Edition / applicable upgrade)| |<strong>Door Sensor</strong>|Supported| |<strong>Filament Run-Out Sensor</strong>|Supported| |<strong>Filament Tangle Sensor</strong>|Supported| |<strong>Filament Odometry</strong>|Supported with AMS| |<strong>Power-Loss Recovery</strong>|Supported| |<strong>Touchscreen</strong>|5-inch, 1280 × 720| |<strong>Storage</strong>|Built-in 8 GB eMMC + USB| |<strong>Neural Processing Unit</strong>|2 TOPS| |<strong>Slicer</strong>|Bambu Studio| |<strong>Operating Systems</strong>|Windows, macOS, Linux| |<strong>Input Voltage</strong>|100–120 VAC / 200–240 VAC, 50/60 Hz| |<strong>Maximum Power</strong>|1170 W @ 110 V / 2050 W @ 220 V| |<strong>Connectivity</strong>|Wi-Fi + USB / software ecosystem| |<strong>AMS Compatibility</strong>|Compatible with Bambu material-management systems|</p>
+<p><strong>Note:</strong> Maximum toolhead speed is a machine motion specification, not a guarantee that every model will print at 1,000 mm/s. Actual print speed depends on material, geometry, layer height, acceleration limits, extrusion flow, cooling, and process settings.</p>
+<p>Bambu Lab also describes the H2S as having <strong>23 sensors and three onboard cameras</strong>, along with an optional Vision Encoder for motion accuracy below 50 microns and automatic hole/contour compensation features. citeturn627906view1</p>
+<p>\---</p>
+<h1>16\. Material Used — PLA Basic</h1>
+<p>The wallet was printed using <strong>PLA Basic</strong>.</p>
+<h3>Why PLA is widely used for prototyping</h3>
+<p>PLA is popular in educational and prototyping environments because it generally offers:</p>
+<ul>
+<li>easy printability,</li>
+<li>good dimensional stability,</li>
+<li>relatively low printing difficulty,</li>
+<li>good surface appearance,</li>
+<li>a broad range of available colours,</li>
+<li>and a comparatively low processing temperature.</li>
+</ul>
+<p>For this project, PLA Basic was appropriate because the focus was on learning the complete workflow from digital model to functional prototype.</p>
+<p>\---</p>
+<h1>17\. Functional Wallet Model</h1>
+<p>I selected a <strong>functional wallet model</strong> from an online maker-model source.</p>
+<p>The objective was not simply to print a decorative object, but to fabricate something that demonstrates:</p>
+<ul>
+<li>functional geometry,</li>
+<li>controlled dimensions,</li>
+<li>print orientation,</li>
+<li>support strategy,</li>
+<li>infill selection,</li>
+<li>material optimization,</li>
+<li>and practical use.</li>
+</ul>
+<p>\---</p>
+<h1>18\. Model Preparation in Bambu Studio</h1>
+<h2>Step 1 — Import</h2>
+<p>The wallet model was imported into <strong>Bambu Studio</strong>.</p>
+<h2>Step 2 — Scaling</h2>
+<p>The model was scaled down to <strong>90% of its original size</strong>.</p>
+<p>The primary objective was to keep the material usage <strong>below approximately 50 g</strong> while retaining the functional form of the wallet.</p>
+<h3>Why scaling matters</h3>
+<p>Scaling directly affects:</p>
+<ul>
+<li>overall dimensions,</li>
+<li>material consumption,</li>
+<li>print time,</li>
+<li>fit,</li>
+<li>wall proportions,</li>
+<li>and functional usability.</li>
+</ul>
+<p>This demonstrated an important design-for-manufacturing concept:</p>
+<blockquote>
+<p>\<em>\</em>The best printed part is not always the biggest or most detailed part; it is the part that satisfies the required function within the available manufacturing constraints.\<em>\</em></p>
+</blockquote>
+<p>\---</p>
+<h1>19\. Model Orientation</h1>
+<p>The wallet was oriented to <strong>lay horizontally</strong> on the build plate.</p>
+<p>Orientation is one of the most important decisions in FDM printing because it affects:</p>
+<ul>
+<li>layer direction,</li>
+<li>mechanical strength,</li>
+<li>surface quality,</li>
+<li>support requirements,</li>
+<li>print time,</li>
+<li>overhang behaviour,</li>
+<li>and bed adhesion.</li>
+</ul>
+<p>For a functional component, print orientation should be chosen based on how forces are expected to act on the final part.</p>
+<p>\---</p>
+<h1>20\. Support Strategy</h1>
+<h3>Tree Support</h3>
+<p><strong>Tree supports</strong> were enabled for areas requiring support.</p>
+<p>Tree supports branch out from a small base and can reduce the amount of contact with the model compared with dense conventional support structures.</p>
+<p>This can be especially helpful for:</p>
+<ul>
+<li>overhangs,</li>
+<li>curved surfaces,</li>
+<li>irregular geometry,</li>
+<li>and support-sensitive areas.</li>
+</ul>
+<h3>Outer Brim</h3>
+<p>An <strong>outer brim</strong> was also used.</p>
+<p>The brim increases the area of the first layer around the object, improving bed adhesion and reducing the chance of edge lifting or warping.</p>
+<p>\---</p>
+<h1>21\. Infill</h1>
+<p>The wallet was printed using:</p>
+<p><strong>Infill Pattern:</strong> Grid <strong>Infill Density:</strong> <strong>10%</strong></p>
+<p>Infill controls the internal structure of the print.</p>
+<p>A lower infill percentage generally:</p>
+<ul>
+<li>reduces material use,</li>
+<li>reduces weight,</li>
+<li>reduces print time,</li>
+</ul>
+<p>while potentially reducing stiffness and strength.</p>
+<p>A <strong>10% grid infill</strong> therefore provided a practical compromise for this prototype where reducing material consumption was important.</p>
+<p>\---</p>
+<h1>22\. Slicing and Print Estimate</h1>
+<p>After the model was:</p>
+<ul>
+<li>scaled,</li>
+<li>oriented,</li>
+<li>supported,</li>
+<li>given a brim,</li>
+<li>and assigned a 10% grid infill,</li>
+</ul>
+<p>the model was <strong>sliced in Bambu Studio</strong>.</p>
+<p>The slicer generated the estimated toolpaths and predicted a print time of approximately:</p>
+<blockquote>
+<p>\<em>\</em>\~2 hours\<em>\</em></p>
+</blockquote>
+<p>The exact print time can vary depending on printer warm-up, model geometry, layer settings, speeds, accelerations, support generation, and other machine parameters.</p>
+<p>\---</p>
+<h1>23\. Final 3D Printing Configuration</h1>
+<p>|Parameter|Selected Setting| |-|-| |<strong>Printer</strong>|Bambu Lab H2S| |<strong>Process</strong>|FDM / FFF| |<strong>Material</strong>|PLA Basic| |<strong>Model</strong>|Functional Wallet| |<strong>Scale</strong>|<strong>90%</strong>| |<strong>Target Material Usage</strong>|<strong>&lt; 50 g</strong>| |<strong>Orientation</strong>|Horizontal / laid flat| |<strong>Support</strong>|Tree Support| |<strong>Bed Adhesion</strong>|Outer Brim| |<strong>Infill Pattern</strong>|Grid| |<strong>Infill Density</strong>|<strong>10%</strong>| |<strong>Slicer</strong>|Bambu Studio| |<strong>Estimated Print Time</strong>|<strong>\~2 hours</strong>|</p>
+<p>\---</p>
+<h1>24\. Laser Cutting vs 3D Printing</h1>
+<p>These two processes demonstrate opposite manufacturing philosophies.</p>
+<p>|Feature|Laser Cutting|3D Printing| |-|-|-| |<strong>Manufacturing Type</strong>|Subtractive / sheet processing|Additive manufacturing| |<strong>Basic Action</strong>|Removes or marks material|Adds material layer by layer| |<strong>Input</strong>|2D design / vector or raster|3D model| |<strong>Typical Material Form</strong>|Sheet|Filament / resin / powder etc.| |<strong>Workflow Software</strong>|RDWorks V8|Bambu Studio| |<strong>Process Used</strong>|CO₂ laser cutting / scanning|FDM| |<strong>Material Used Here</strong>|Acrylic|PLA Basic| |<strong>Geometry</strong>|Primarily 2D / planar|Fully 3D| |<strong>Main Strength</strong>|Fast sheet cutting and engraving|Rapid functional 3D prototyping| |<strong>Main Constraint</strong>|Material and heat limitations|Layering, support, print orientation| |<strong>Prototype Output</strong>|Flat fabricated component|Volumetric functional object|</p>
+<p>\---</p>
+<h1>25\. Key Learning Outcomes</h1>
+<p>This week's work expanded the understanding of <strong>digital manufacturing beyond CAD modeling</strong>.</p>
+<h3>1\. Design Must Match the Manufacturing Process</h3>
+<p>A design needs to be created with the final fabrication method in mind.</p>
+<p>For laser cutting, geometry must be compatible with vector/raster processing and material thickness.</p>
+<p>For 3D printing, geometry must be compatible with layer-by-layer deposition, overhang limits, supports, and build orientation.</p>
+<h3>2\. Software Is Part of Manufacturing</h3>
+<p>RDWorks V8 and Bambu Studio were not merely file viewers.</p>
+<p>They acted as the bridge between:</p>
+<p><strong>Digital Geometry → Machine Instructions → Physical Output</strong></p>
+<h3>3\. Manufacturing Parameters Affect the Final Result</h3>
+<p>Small changes in:</p>
+<ul>
+<li>power,</li>
+<li>speed,</li>
+<li>orientation,</li>
+<li>support,</li>
+<li>infill,</li>
+<li>scaling,</li>
+<li>and adhesion strategy</li>
+</ul>
+<p>can significantly change the final prototype.</p>
+<h3>4\. Material Optimization Matters</h3>
+<p>The wallet exercise demonstrated that a functional result can be obtained while deliberately controlling material consumption.</p>
+<p>Scaling the model to <strong>90%</strong> and using <strong>10% grid infill</strong> helped move the design toward the target of staying below <strong>50 g</strong> of material.</p>
+<h3>5\. Prototyping Is an Iterative Process</h3>
+<p>A digital model is only the beginning.</p>
+<p>A complete engineering workflow is:</p>
+<pre><code>Design
+  ↓
+Prepare
+  ↓
+Fabricate
+  ↓
+Observe
+  ↓
+Measure
+  ↓
+Improve
+  ↓
+Re-fabricate</code></pre>
+<p>That iteration is where digital fabrication becomes engineering rather than simply &quot;printing a model.&quot;</p>
+<p>\---</p>
+<h1>26\. Reflection</h1>
+<p>This week gave me practical exposure to two very different manufacturing technologies.</p>
+<p>With <strong>laser cutting</strong>, I learned how an artistic reference can be transformed into a fabrication-ready vector design and then processed through a CO₂ laser using scan and cut operations. Producing both black and transparent acrylic variants showed how the <strong>same digital geometry can create very different visual results depending on the material</strong>.</p>
+<p>With <strong>3D printing</strong>, I learned how a 3D model must be prepared for the physical constraints of additive manufacturing. Scaling the functional wallet to <strong>90%</strong>, orienting it horizontally, using <strong>tree support</strong>, adding an <strong>outer brim</strong>, and selecting <strong>10% grid infill</strong> demonstrated how manufacturing decisions directly influence material consumption, stability, print time, and functionality.</p>
+<p>The larger takeaway is that <strong>digital fabrication is not simply about making objects — it is about translating digital intent into physical reality while balancing constraints, materials, geometry, time, and process capability.</strong></p>
+<p>\---</p>
+<h1>27\. Tools \&amp; Technologies Used</h1>
+<h3>Laser Cutting</h3>
+<ul>
+<li><strong>CO₂ Laser Cutter</strong></li>
+<li><strong>RDWorks V8</strong></li>
+<li><strong>DXF</strong></li>
+<li>Acrylic Sheet</li>
+<li>Vector Illustration / Image Processing</li>
+</ul>
+<h3>3D Printing</h3>
+<ul>
+<li><strong>Bambu Lab H2S</strong></li>
+<li><strong>Bambu Studio</strong></li>
+<li><strong>FDM / FFF</strong></li>
+<li><strong>PLA Basic</strong></li>
+<li>Tree Supports</li>
+<li>Outer Brim</li>
+<li>10% Grid Infill</li>
+</ul>
+<p>\---</p>
+<h1>28\. Process Summary</h1>
+<pre><code>                         WEEKLY DIGITAL FABRICATION
+
+     LASER CUTTING                              3D PRINTING
+           │                                        │
+           ▼                                        ▼
+   Arthur Morgan Image                     Functional Wallet Model
+           │                                        │
+           ▼                                        ▼
+   Illustration / Vectorization                 Import
+           │                                        │
+           ▼                                        ▼
+         DXF                                   Scale 90%
+           │                                        │
+           ▼                                        ▼
+      RDWorks V8                              Orientation
+           │                                        │
+           ├── Scan Mode                            ├── Tree Support
+           │                                        ├── Outer Brim
+           └── Cut Mode                             └── 10% Grid Infill
+           │                                        │
+           ▼                                        ▼
+      CO₂ Laser Cutter                         Bambu Lab H2S
+           │                                        │
+           ▼                                        ▼
+   Acrylic Prototypes                         PLA Prototype
+   Black + Transparent                          \~2 Hour Estimate</code></pre>
+<p>\---</p>
+<h2>29\. References</h2>
+<p>1. <strong>Bambu Lab — H2S Technical Specifications</strong> https://bambulab.com/h2s 2. <strong>Bambu Lab — H2S Product Announcement / Technical Overview</strong> https://blog.bambulab.com/h2s-the-ultimate-single-nozzle-3d-printer-now-bigger-than-ever/ 3. <strong>Bambu Lab — Bambu Studio (Official GitHub Repository)</strong> https://github.com/bambulab/BambuStudio 4. <strong>General additive-manufacturing terminology:</strong> FDM / FFF, SLA, DLP, MSLA, SLS, SLM, DMLS, Binder Jetting, Material Jetting, Sheet Lamination, and Directed Energy Deposition.</p>
+<p>\---</p>
+<h2>30\. Portfolio Caption</h2>
+<blockquote>
+<p>\<em>\</em>This week, I explored two sides of digital fabrication — subtractive and additive manufacturing. I converted an Arthur Morgan illustration into a DXF workflow for CO₂ laser cutting and produced acrylic variants using scan and cut operations. I also prepared and printed a functional wallet on a Bambu Lab H2S using PLA Basic, optimizing the model to 90% scale, 10% grid infill, tree supports, and an outer brim. The experience reinforced a key engineering lesson: the digital design is only half the job; the manufacturing process, material, constraints, and parameter choices determine how that design becomes reality.\<em>\</em></p>
+</blockquote></div></section></main>
+<footer class="footer">GENERATED FROM OBSIDIAN · 2026-09-30</footer>
 </div>
 </body></html>
