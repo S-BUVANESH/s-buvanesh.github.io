@@ -11,10 +11,14 @@
             "id": "158e14fcb46110ee",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "Week_00/02_Tuesday/Day_02_Knowing_Yourself_Is_One_Thing_Pitching_Yourself_Is_Another.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Day_02_Knowing_Yourself_Is_One_Thing_Pitching_Yourself_Is_Another"
             }
           }
         ]
@@ -196,7 +200,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "7b7c6c0e5244a223",
+  "active": "158e14fcb46110ee",
   "lastOpenFiles": [
     "Week_06/02_Tuesday/Weekly_Portfolio_Update_3D_Printing (1).md",
     "Week_06/01_Monday/Weekly_Portfolio_Update_Laser_Cutting.md",
