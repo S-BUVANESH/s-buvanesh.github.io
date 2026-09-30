@@ -128,11 +128,11 @@
     "url": "Blogs/Week_05.html"
   },
   "06": {
-    "hasContent": false,
-    "daysWithContent": 0,
+    "hasContent": true,
+    "daysWithContent": 2,
     "imageCount": 0,
-    "title": "Week 06 Review",
-    "date": "2026-09-30",
+    "title": "From Screen to Acrylic: Cutting Arthur Morgan",
+    "date": "2026-09-29",
     "url": "Blogs/Week_06.html"
   },
   "07": {
